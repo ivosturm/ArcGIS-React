@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="valcon.reactarcgis.ReactArcGIS" pluginWidget="true" needsEntityContext="true" offlineCapable="true"
+        supportedPlatform="Web"
+        xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>React ArcGIS</name>
+    <description>a sophisticated React widget integrating with the newest ArcGIS API 4.2.x</description>
+    <icon>
+
+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
+/wD/2Q==
+	
+	</icon>
+    <properties>
+        <propertyGroup caption="Appearance">
+            <propertyGroup caption="Size">
+                <property key="mapHeight" type="integer" defaultValue="600">
+                    <caption>Height</caption>
+                    <description>The map's height in pixels. Setting it to 10.000 will set it to 100 of the view height and resize it dynamically when zooming.</description> 
+                </property>
+                <property key="mapWidth" type="integer" defaultValue="900">
+                    <caption>Width</caption>
+                    <description>The map's width in pixels. Setting it to 10.000 will set it to 100 % of the width of the screen and will resize it dynamically when zooming.</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Basemaps">
+                <property key="baseMapID" type="string" required="false" defaultValue="topo">
+                    <caption>Base Default Map</caption>
+                    <description>Default map is "topo". Pick one of the values as published by Esri: https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap</description>
+                </property>	
+             </propertyGroup>
+             <propertyGroup caption="Default Location / Zooming">
+                <property key="defaultY" type="integer" defaultValue="52">
+                    <caption>Default Y</caption>
+                    <description>Default Y location for the map to start at.</description> 
+                </property>
+                <property key="defaultX" type="integer" defaultValue="4">
+                    <caption>Default X</caption>
+                    <description>Default X for the map to start at.</description> 
+                </property>
+                <property key="defaultZoom" type="integer" defaultValue="3">
+                    <caption>Default Zoom Level</caption>
+                    <description>The zoom level used when displaying a map only.</description> 
+                </property>
+                <property key="singleObjectZoom" type="integer" defaultValue="6">
+                    <caption>Object Zoom Level</caption>
+                    <description>The zoom level used when focussing on an object.</description> 
+                </property>
+             </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Data Source">
+            <propertyGroup caption="Graphic">
+				<property key="graphicObjects" type="datasource" isList="true" required="false">
+					<caption>Data source</caption>
+					<description/>
+				</property>
+				<property key="objectIDAttr" type="attribute" required="true" dataSource="graphicObjects">
+					<caption>Object Identifier attribute</caption>
+					<description>The unique object identifier. Can either be the actual Esri ID (ObjectId) or some other supposed to be unique field. If it is not the Esri ID, then in your layer configurations, also add the settings Client ID and Client ID Attribute Type</description>
+					<attributeTypes>
+						<attributeType name="Integer"/>
+                        <attributeType name="Long"/>
+                        <attributeType name="String"/>
+					</attributeTypes>
+				</property>
+				<property key="layerIDAttr" type="attribute" required="true" dataSource="graphicObjects">
+					<caption>Layer ID attribute</caption>
+					<description>The unique layer id the object is stored in.</description>
+					<attributeTypes>
+						<attributeType name="Integer"/>
+                        <attributeType name="String"/>
+					</attributeTypes>
+				</property>
+				<property key="colorAttr" type="attribute" required="false" dataSource="graphicObjects">
+					<caption>Color attribute</caption>
+					<description>The attribute determining the Color of the object. Is used to overrule default colors from ArcGIS.</description>
+					<attributeTypes>
+						<attributeType name="String"/>
+					</attributeTypes>
+				</property>
+				<property key="sizeAttr" type="attribute" required="false" dataSource="graphicObjects">
+					<caption>Size attribute</caption>
+					<description>The attribute determining the Size of the object. Is used to overrule default colors from ArcGIS. 4 is small, 50 very large.</description>
+					<attributeTypes>
+						<attributeType name="Integer"/>
+					</attributeTypes>
+				</property>
+				<property key="symbolAttr" type="attribute" required="false" dataSource="graphicObjects">
+					<caption>Symbol attribute</caption>
+					<description>The attribute determining the Symbol of the object. Is used to overrule default symbol from ArcGIS.</description>
+					<attributeTypes>
+						<attributeType name="Enum"/>
+					</attributeTypes>
+				</property>
+            </propertyGroup> 
+            <propertyGroup caption="Appearance">
+				<property key="dsShowAllObjects" type="boolean" required="true" defaultValue="false">
+					<caption>Show all ArcGIS Objects</caption>
+					<description>If enabled all objects in layers will be shown and objects fed from this data source highlighted. If disabled only the objects fed from this data source are shown.
+					</description>
+				</property>
+            	<property key="dsHighlightingEnabled" type="boolean" required="true" defaultValue="true">
+					<caption>Highlight Mendix Objects</caption>
+					<description>If enabled all available Mendix objects in datasource will be hightlighted with bright blue color.
+					</description>
+				</property>
+            </propertyGroup> 
+        </propertyGroup>     
+        <propertyGroup caption="Widgets">
+            <propertyGroup caption="Legend">
+                <property key="enableLegend" type="boolean" defaultValue="true">
+                    <caption>Enable</caption>
+                    <description>This decides whether a legend is available for the plotted layers.</description> 
+                </property>
+                <property key="legendStartExpanded" type="boolean" defaultValue="false">
+                    <caption>Start Expanded</caption>
+                    <description>This decides whether the legend is expanded on first load of map.</description> 
+                </property>
+                <property key="legendTitle" type="string" defaultValue="Legend">
+                    <caption>Title</caption>
+                    <description>The title to appear in the legend.</description> 
+                </property>  
+                <property key="legendPosition" type="enumeration" required="true" defaultValue="bottomRight">
+                    <caption>Position</caption>
+                    <description>Determine where the widget should be position on the map.</description>
+                    <enumerationValues>
+                        <enumerationValue key="bottomRight">Bottom Right</enumerationValue>
+                        <enumerationValue key="bottomLeft">Bottom Left</enumerationValue>
+                        <enumerationValue key="topRight">Top Right</enumerationValue>
+                        <enumerationValue key="topLeft">Top Left</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="legendPlaceholderIndex" type="integer" defaultValue="1">
+                    <caption>Placeholder Index</caption>
+                    <description>If more widgets, like Search, have same location selected, use this attribute to make it appear first (1) or second (2).</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Search">
+                <property key="enableSearch" type="boolean" defaultValue="true">
+                    <caption>Enable Search</caption>
+                    <description>Whether a Search Bar will be added to the map to search for and zoom to a typed in address.</description> 
+                </property> 
+                <property key="searchStartExpanded" type="boolean" defaultValue="false">
+                    <caption>Start Expanded</caption>
+                    <description>This decides whether the search box is expanded on first load of map.</description> 
+                </property>
+                <property key="searchPosition" type="enumeration" required="true" defaultValue="topRight">
+                    <caption>Position</caption>
+                    <description>Determine where the widget should be position on the map.</description>
+                    <enumerationValues>
+                        <enumerationValue key="bottomRight">Bottom Right</enumerationValue>
+                        <enumerationValue key="bottomLeft">Bottom Left</enumerationValue>
+                        <enumerationValue key="topRight">Top Right</enumerationValue>
+                        <enumerationValue key="topLeft">Top Left</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="searchPlaceholderIndex" type="integer" defaultValue="1">
+                    <caption>Placeholder Index</caption>
+                    <description>If more widgets, like Legend, have same location selected, use this attribute to make it appear first (1) or second (2).</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Toggle Layers">
+                <property key="enableToggleLayer" type="boolean" defaultValue="true">
+                    <caption>Enable Toggle Layer</caption>
+                    <description>Whether a Toggle Layer will be added to the map to toggle visibility of graphics within the layer.</description> 
+                </property> 
+                <property key="toggleLayerStartExpanded" type="boolean" defaultValue="false">
+                    <caption>Start Expanded</caption>
+                    <description>This decides whether the toggle layer list is expanded on first load of map.</description> 
+                </property>
+                <property key="toggleLayerPosition" type="enumeration" required="true" defaultValue="topRight">
+                    <caption>Position</caption>
+                    <description>Determine where the widget should be position on the map.</description>
+                    <enumerationValues>
+                        <enumerationValue key="bottomRight">Bottom Right</enumerationValue>
+                        <enumerationValue key="bottomLeft">Bottom Left</enumerationValue>
+                        <enumerationValue key="topRight">Top Right</enumerationValue>
+                        <enumerationValue key="topLeft">Top Left</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="toggleLayerPlaceholderIndex" type="integer" defaultValue="2">
+                    <caption>Placeholder Index</caption>
+                    <description>If more widgets, like Legend, have same location selected, use this attribute to make it appear first (1) or second (2).</description> 
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Layers">
+            <propertyGroup caption="Static Layers">
+                <property key="layerArray" type="object" isList="true" required="false">
+                <caption>Layer Definitions</caption>
+                <description>Add one or multiple layers to plot on the basemap.</description>
+                <properties>
+                    <propertyGroup caption="Layer Entries">
+                        <propertyGroup caption="Definition">
+                            <property key="layerServerType" type="enumeration" required="true" defaultValue="FeatureServer">
+                                <caption>Layer Server Type</caption>
+                                <description>Determines which layer server type to use. Preferred is FeatureServer. Currently actually a MapServer can be chosen but it will be loaded as FeatureServer. A PortalItem is a customized map by a client based on a actual FeatureServer. It has a unique id which can be entered below.</description>
+                                <enumerationValues>
+                                    <enumerationValue key="MapServer">MapServer</enumerationValue>
+                                    <enumerationValue key="FeatureServer">FeatureServer</enumerationValue>
+                                    <enumerationValue key="PortalItem">PortalItem</enumerationValue>
+                                </enumerationValues>
+                            </property>
+                            <property key="layerURLStatic" type="string">
+                                <caption>Static Layer URL</caption>
+                                <description>Configure a static URL of the layer here.</description>
+                            </property>
+                            <property key="layerObjects" type="datasource" isList="true" required="false">
+                                <caption>Dynamic Layer URL</caption>
+                                <description>Layer URL dynamic source. If configured, overrules above possibly configured 'Static Layer URL' value.</description>
+                            </property>
+                            <property key="urlAttr" type="attribute" required="false" dataSource="layerObjects">
+                                <caption>URL attribute</caption>
+                                <description>The URL attribute for the layer.</description>
+                                <attributeTypes>
+                                    <attributeType name="String"/>
+                                </attributeTypes>
+                            </property>
+                            <property key="layerID" type="string">
+                                <caption>Layer ID</caption>
+                                <description>The name/identifier of the layer to appear in the toggle layers pane.  Should correspond with Layer ID attribute of Mendix object if used.</description>
+                            </property>
+                            <property key="layerIndex" type="integer" defaultValue="1">
+                                <caption>Layer Index</caption>
+                                <description>Determine the order in which to load the layer. Higher order means loaded 'later'/on top.</description>
+                            </property>
+                            <property key="objectIDAttr" type="string" required="true" defaultValue="ObjectId">
+                                <caption>Object ID</caption>
+                                <description>The esri Field storing the unique identifier of the object. Look it up in the layer definition of ArcGIS, field which has type: esriFieldTypeOID. Value is case sensitive</description>
+                            </property>
+                            <property key="clientIDAttr" type="string" required="false" defaultValue="">
+                                <caption>Client ID</caption>
+                                <description>(Optional) The client/customer ID attribute, which can be used next to the Object ID. Needs to be stored on the ArcGIS side as well.</description>
+                            </property>
+                            <property key="clientIDAttrType" type="enumeration" defaultValue="String">
+                                <caption>Client ID Attr Type</caption>
+                                <description>The client/customer ID attribute type</description>
+                                <enumerationValues>
+                                    <enumerationValue key="String">String</enumerationValue>
+                                    <enumerationValue key="Number">Number</enumerationValue>
+                                </enumerationValues>
+                            </property>
+                            <property key="featureLayerID" type="string" required="false">
+                                <caption>Feature Layer ID</caption>
+                                <description>(FeatureLayer only) The ID of the FeatureLayer.</description>
+                            </property>
+                            <property key="mendixLayer" type="boolean" required="true" defaultValue="false">
+                                <caption>Mendix Layer</caption>
+                                <description> One Feature Layer can be connected to Mendix Objects. This layer will also be used for sketching if enabled. See own Sketch tab as well.</description>
+                            </property>
+                            <property key="portalItemID" type="string" required="false">
+                                <caption>Portal Item ID</caption>
+                                <description>(PortalItem only) The unique ID of a portal item. Typically looks like: aa1d3f80270146208328cf66d022e09c</description>
+                            </property>
+                        </propertyGroup> 
+                    </propertyGroup>
+                    <propertyGroup caption="Apearance">
+                        <propertyGroup caption="Appearance">    
+                            <property key="visibleLayerIndexes" type="string" required="false">
+                                <caption>Visible Layer Indexes</caption>
+                                <description>(MapLayer only) The indexes, concatenated and separated with a comma, of the Layers to show on the basemap. So, if you want to show layers 2 and 3, add 2, 3 here.</description>
+                            </property>
+                            <property key="visibilityOnLoad" type="boolean" required="true" defaultValue="true">
+                                <caption>Visibility On Load</caption>
+                                <description>If set to 'Yes' the layer starts with the layer ticked, hence visible.</description>
+                            </property>
+                            <property key="clusteringEnabled" type="boolean" required="true" defaultValue="false">
+                                <caption>Clustering</caption>
+                                <description>(Only applicable if clustering enabled) Determines for this layer whether to enable clustering. Advise only to use for point layers. </description>
+                            </property>
+                            <property key="customStylingEnabled" type="boolean" required="true" defaultValue="false">
+                                <caption>Custom Styling</caption>
+                                <description>Whether to overrule styling for the objects in this layer. Will use color + type of GISObject + mapping of default color + type as defined for Layer ID in 'Custom Coloring'</description>
+                            </property>
+                            <property key="showAttribution" type="boolean" defaultValue="false">
+                                <caption>Show Attribution</caption>
+                                <description>Whether to show the attribution (who contributed to the map ESRI, Nasa, Kadaster, etc) of the Layer or not.</description>
+                            </property>
+                            <property key="opacity" type="string" required="false" defaultValue="1.0">
+                                <caption>Layer Opacity</caption>
+                                <description>(FeatureLayer only) Adjust the opacity of the objects plotted on the map. 1.0 is fully opaque, 0.0 is fully transparent. For polyons typically use 0.5.</description>
+                            </property>
+                        </propertyGroup> 
+                    </propertyGroup>
+                </properties>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Dynamic Layers">
+                <property key="dynLayerObject" type="datasource" isList="true" required="false">
+                    <caption>Dynamic Layer Data source</caption>
+                    <description>Load the main client layer as a static layer, perhaps adding the Client ID for quering and use this data source to add specific other supporting layers not being the main layer.</description>
+                </property>
+                <property key="dynLayerLayerID" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Layer ID Attr</caption>
+                    <description>The name/identifier of the layer to appear in the toggle layers pane. Should correspond with Layer ID attribute of Mendix object if used. For a PortalItem enter the portal item id here. See static layer config for an example.</description>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerServerTypeAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Layer Server Type Attr</caption>
+                    <description>Determines which layer server type to use. Preferred is FeatureServer</description>
+                    <attributeTypes>
+                        <attributeType name="Enum"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerVisibilityOnLoadAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Visibility On Load</caption>
+                    <description>Determines the visibility of the layer once the map loads the first time.</description>
+                    <attributeTypes>
+                        <attributeType name="Boolean"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerEnableClusteringAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Clustering Enabled</caption>
+                    <description>(Only applicable if clustering enabled) Determines for this layer whether to enable clustering. Advise only to use for point layers.</description>
+                    <attributeTypes>
+                        <attributeType name="Boolean"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerCustomStylingEnabledAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Custom Styling Enabled</caption>
+                    <description>Whether to overrule styling for the objects in this layer. Will use mapping as defined for Layer ID in 'Custom Coloring'</description>
+                    <attributeTypes>
+                        <attributeType name="Boolean"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerStaticURLAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>URL Attr</caption>
+                    <description>The static layer URL</description>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerObjectIDAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Object ID Attr</caption>
+                    <description>The esri Field storing the unique identifier of the object. Look it up in the layer definition of ArcGIS, field which has type: esriFieldTypeOID. Value is case sensitive</description>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerIndexAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Index Attr</caption>
+                    <description>Determine the order in which to load the layer. Higher order means loaded 'later'/on top.</description>
+                    <attributeTypes>
+                        <attributeType name="Integer"/>
+                    </attributeTypes>
+                </property>
+                <property key="dynLayerMendixObjectsAttr" type="attribute" required="false" dataSource="dynLayerObject">
+                    <caption>Mendix Objects Attr</caption>
+                    <description>The ONE Feature Layer which can be connected to Mendix objects. If sketching is enabled, this layer will be used.</description>
+                    <attributeTypes>
+                        <attributeType name="Boolean"/>
+                    </attributeTypes>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Custom Styling">
+            <propertyGroup caption="Default Styling for MendixLayers">
+                <property key="csDefaultArray" type="object" isList="true" required="false">
+                    <caption>Default Custom Styling</caption>
+                    <description>(MendixLayer only) Add default appearance to the GISObjects.</description>
+                    <properties>
+                        <propertyGroup caption="Default Styling Entries">
+                            <propertyGroup caption="Default Mapping">
+                                <property key="csDefaultArrayLayerID" type="string" required="false" defaultValue="fill with Layer ID!">
+                                    <caption>Layer ID</caption>
+                                    <description>(MendixLayer only) the Layer ID to apply the mapping to as used in static/dynamic layer config.</description>
+                                </property>
+                                <property key="csDefaultArrayColor" type="string" required="false" defaultValue="#FF0000">
+                                    <caption>Default Color</caption>
+                                    <description>The default color for all objects in the Mendix Layer that are not stored in Mendix. If left empty will leave color as is. Can be hexadecimal #FF0000 or RGB: 255,0,0</description> 
+                                </property>
+                                <property key="csDefaultArraySize" type="integer" required="true" defaultValue="8">
+                                    <caption>Default Size</caption>
+                                    <description>The default size for all objects in the Mendix Layer that are not stored in Mendix. 4 is small, 50 is very large</description> 
+                                </property>
+                                <property key="csDefaultArraySymbol" type="enumeration" required="true" defaultValue="circle">
+                                    <caption>Default Symbol</caption>
+                                    <description>Determine the symbol for the graphic.</description>
+                                    <enumerationValues>
+                                        <enumerationValue key="circle">Circle</enumerationValue>
+                                        <enumerationValue key="cross">Cross</enumerationValue>
+                                        <enumerationValue key="diamond">Diamond</enumerationValue>
+                                        <enumerationValue key="square">Square</enumerationValue>
+                                        <enumerationValue key="x">X</enumerationValue>
+                                    </enumerationValues>
+                                </property>
+                            </propertyGroup>
+                        </propertyGroup>
+                    </properties>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Legend Entries for MendixLayers">
+                <property key="csLegendEntriesArray" type="object" isList="true" required="false">
+                    <caption>Legend Entries</caption>
+                    <description>(MendixLayer only) Add legend entries for custom styled GISObjects.</description>
+                    <properties>
+                        <propertyGroup caption="Default Styling Entries">
+                            <propertyGroup caption="Default Mapping">
+                                <property key="csLegendEntryLayerID" type="string" required="false" defaultValue="fill with Layer ID!">
+                                    <caption>Layer ID</caption>
+                                    <description>(MendixLayer only) the Layer ID to apply the mapping to as used in static/dynamic layer config.</description>
+                                </property>
+                                <property key="csLegendEntryName" type="string" required="false" defaultValue="Type 1">
+                                    <caption>Name</caption>
+                                    <description>The name of the legend entry to appear next to the symbol with set size and color.</description> 
+                                </property>
+                                <property key="csLegendEntryColor" type="string" required="false" defaultValue="#FF0000">
+                                    <caption>Color</caption>
+                                    <description>The color for the legend entry. Can be hexadecimal #FF0000 or RGB: 255,0,0</description> 
+                                </property>
+                                <property key="csLegendEntrySize" type="integer" required="true" defaultValue="8">
+                                    <caption>Size</caption>
+                                    <description>The size for the legend entry. 4 is small, 50 is very large</description> 
+                                </property>
+                                <property key="csLegendEntrySymbol" type="enumeration" required="true" defaultValue="circle">
+                                    <caption>Symbol</caption>
+                                    <description>Determine the symbol for the graphic of the legend entry</description>
+                                    <enumerationValues>
+                                        <enumerationValue key="circle">Circle</enumerationValue>
+                                        <enumerationValue key="cross">Cross</enumerationValue>
+                                        <enumerationValue key="diamond">Diamond</enumerationValue>
+                                        <enumerationValue key="square">Square</enumerationValue>
+                                        <enumerationValue key="x">X</enumerationValue>
+                                    </enumerationValues>
+                                </property>
+                            </propertyGroup>
+                        </propertyGroup>
+                    </properties>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Interaction">
+            <propertyGroup caption="Popup Attributes Config">
+                <property key="intAttributesArray" type="object" isList="true" required="false">
+                    <caption>Attributes Array</caption>
+                    <description>Add one or multiple attributes to the pop-up of a configured layer.</description>
+                    <properties>
+                        <propertyGroup caption="Attribute Entries">
+                            <property key="intAttributeName" type="string">
+                                <caption>Attribute Name</caption>
+                                <description>The name of the attribute in the layer to appear in the pop-up. Case sensitive and on ArcGIS side mostly defined as all uppercase.</description>
+                            </property>
+                            <property key="intAttributeMendix" type="boolean" defaultValue="false">
+                                <caption>Mendix Owned</caption>
+                                <description>If marked as a Mendix Owned label, based on this attribute name, the value will be retrieved from Mendix instead of ArcGIS.</description>
+                            </property>
+                            <property key="intAttributeLabel" type="string">
+                                <caption>Attribute Label</caption>
+                                <description>The label to appear next to the attribute value retrieve for 'Attribute Name'.</description>
+                            </property>
+                            <property key="intAttributeLayerID" type="string">
+                                <caption>Layer ID</caption>
+                                <description>The ID of the layer the attribute is stored in. This value needs to agree with a value configured in 'Layers' > 'Layer definitions' > 'Layer ID'.</description>
+                            </property>
+                            <property key="intAttributeIsTitle" type="boolean" defaultValue="false">
+                                <caption>Is Title</caption>
+                                <description>Determines whether to make this attribute available in the title of the pop-up.</description>
+                            </property>
+                            <property key="intAttributeDecimalPlaces" type="integer" defaultValue="0">
+                                <caption>Decimals</caption>
+                                <description>(Decimal field only) Determine the amount of decimals to appear.</description>
+                            </property>
+                            <property key="intAttributeDecimalSeparator" type="string" defaultValue=".">
+                                <caption>Separator</caption>
+                                <description>(Decimal field only) Determine the separator used for thousands</description>
+                            </property>
+                        </propertyGroup>     
+                    </properties>                         
+                </property>
+                <property key="intMendixXPathString" type="string" defaultValue="ArcGIS.GISObject[ObjectID">
+                    <caption>XPath String</caption>
+                    <description>(Workaround) Here, add the XPath (without // prefix, but with Domain Model name) to the Esri (mostly ObjectId) stored on the Mendix object. Pluggable widgets API is lacking possibility to select a microflow only.</description>
+                </property>              
+            </propertyGroup>
+            <propertyGroup caption="Popup Button">
+                <property key="intButtonAction" type="action" required="false" dataSource="graphicObjects">
+                    <caption>Action</caption>
+                    <description/>
+                </property>
+                <property key="intButtonLabel" type="string" required="false" defaultValue="Open">
+                    <caption>Label</caption>
+                    <description>The label of the button to appear in the infowindow.</description> 
+                </property>
+                <property key="intButtonClass" type="string" required="false" defaultValue="esri-icon-launch-link-external">
+                    <caption>Class</caption>
+                    <description>The classes on the button to appear in the infowindow. By default mendix default classes are added. Those can be stripped and/or your own class added. One can also use the Esri Font library classes, available at: https://developers.arcgis.com/javascript/latest/esri-icon-font/</description> 
+                </property>
+                <property key="intButtonIcon" type="icon" required="false">
+                    <caption>Icon</caption>
+                    <description>Button Icon</description>             
+				</property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Point Clustering">
+            <propertyGroup caption="Enable">
+                <property key="cl_enabled" type="boolean" defaultValue="false">
+                    <caption>Enabled</caption>
+                    <description>Decide whether clustering and all settings below should be used when displaying the map.</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Count Text">
+                <property key="cl_symbolTextColor" type="string" defaultValue="#000000">
+                    <caption>Text Color</caption>
+                    <description>The hexadecimal color or the counter amount to appear in the cluster.</description> 
+                </property>
+                <property key="cl_symbolTextSize" type="integer" defaultValue="14">
+                    <caption>Text Size</caption>
+                    <description>The text size for the counter appearing in the clustered point,</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Popup">
+                <property key="cl_popupTitle" type="string" defaultValue="Cluster Summary">
+                    <caption>Popup Title</caption>
+                    <description>The title of the popup to appear on click of a cluster.</description> 
+                </property>
+                <property key="cl_popupContent" type="string" defaultValue="This cluster represents {cluster_count} properties.">
+                    <caption>Popup Title</caption>
+                    <description>The content for the popup. {cluster_count} is an aggregated variable available within clusters to be used.</description> 
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Sizing">
+                <property key="cl_radius" type="integer" defaultValue="80">
+                    <caption>Radius</caption>
+                    <description>Radius for adjacent points to be clustered.</description> 
+                </property>
+                <property key="cl_minSize" type="integer" defaultValue="20">
+                    <caption>Min Size</caption>
+                    <description>Minimum Size for clustering</description> 
+                </property>
+                <property key="cl_maxSize" type="integer" defaultValue="100">
+                    <caption>Max Size</caption>
+                    <description>Maximum Size for clustering</description> 
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+   </properties>
+</widget>
