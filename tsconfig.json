@@ -1,0 +1,12 @@
+{
+  "extends": "./node_modules/@mendix/pluggable-widgets-tools/configs/tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "react",
+        "types": [ "mendix-client" ],
+		"lib": [      
+			"es2017",
+			"dom"
+		]		
+    }
+
+}

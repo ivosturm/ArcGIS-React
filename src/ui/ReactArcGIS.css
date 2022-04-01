@@ -1,0 +1,39 @@
+/*
+Place your custom CSS here
+*/
+div#arcgis-filter {
+  height: 80px;
+  width: 120px;
+}
+
+#arcgis-filter {
+    height: 80px;
+    width: 100%;
+    visibility: hidden;
+  }
+
+  .arcgis-filter-item {
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    vertical-align: baseline;
+    cursor: pointer;
+    height: 40px;
+    text-align: inherit
+  }
+
+  .arcgis-filter-item:focus {
+    background-color: dimgrey;
+  }
+
+  .arcgis-filter-item:hover {
+    background-color: dimgrey;
+  }
+
+  #loading {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+  }
