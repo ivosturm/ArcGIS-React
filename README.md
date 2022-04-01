@@ -1,5 +1,5 @@
 ## ReactArcGIS
-New ArcGIS widget based on React, the Mendix Pluggable Widgets API and the newest ArcGIS API (4.22 / 02-2022)
+New ArcGIS widget based on React, the Mendix Pluggable Widgets API and the newest ArcGIS API (4.22 / 02-2022). Please check out the demo project for a thorough walkthrough on how to configure the widget and it's different functionalities.
 
 ## Features
 1.	Static (in widget settings) as well as dynamic (front end, in app) loading of layers
