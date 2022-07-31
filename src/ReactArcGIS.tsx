@@ -58,17 +58,43 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
         else if (nextState === this.state && nextProps !== this.props) {
             if (
                 ((nextProps.graphicObjects?.status === "available" && nextProps.graphicObjects?.items) ||
-                    nextProps.graphicObjects?.status === "unavailable" ||
-                    !this.props.graphicObjects) &&
+                    !nextProps.graphicObjects) &&
                 ((nextProps.dynLayerObject?.status === "available" && nextProps.dynLayerObject?.items) ||
-                    nextProps.dynLayerObject?.status === "unavailable" ||
-                    !this.props.dynLayerObject)
+                    !nextProps.dynLayerObject)
             ) {
-                console.debug(logNode + "props changed, all configured objects now done loading. Rerendering...");
-                return true;
+                let nextPropsStatusItemsLength = 0;
+                if (nextProps.graphicObjects?.items && nextProps.graphicObjects?.items.length) {
+                    nextPropsStatusItemsLength = nextProps.graphicObjects?.items.length;
+                }
+                let prevPropsStatusItemsLength = 0;
+                if (this.props.graphicObjects?.items && this.props.graphicObjects?.items.length) {
+                    prevPropsStatusItemsLength = this.props.graphicObjects?.items.length;
+                }
+                const messagePrefix = "props changed, all configured objects now available! Map loaded (" + this.state.isLoaded + ") GraphicObjects amount (" + prevPropsStatusItemsLength + ") + status (" + nextProps.graphicObjects?.status + ")";
+                if (this.state.isLoaded  && 
+                    nextProps.graphicObjects?.status === ValueStatus.Available && this.props.graphicObjects?.status === ValueStatus.Available &&
+                    prevPropsStatusItemsLength > 0 && nextPropsStatusItemsLength > 0 &&
+                    prevPropsStatusItemsLength === nextPropsStatusItemsLength) {
+                    if (prevPropsStatusItemsLength === 1 &&
+                        nextPropsStatusItemsLength === 1 &&
+                        (nextProps.graphicObjects.items && this.props.graphicObjects.items) &&
+                        nextProps.graphicObjects?.items[0].id !== this.props.graphicObjects?.items[0].id
+                        ) {
+                            console.debug(logNode + messagePrefix + " didn't change, but Mendix ID changed. Rerendering...");
+                            return true;               
+                    } else // in case of unexpected reloads from Mendix or React framework, block if no changes
+                    {
+                            console.debug(logNode + messagePrefix + " didn't change. NOT rerendering...~"
+                        );
+                        return false;
+                    }
+                } else {
+                        console.debug(logNode + messagePrefix + " changed. Rerendering... ");
+                        return true;
+                }
             } else {
                 console.debug(
-                    logNode + "props changed, one, multiple or all configured objects not fully loaded yet. Waiting..."
+                    logNode + "props changed, one, multiple or all configured objects not available yet. Waiting..."
                 );
                 return false;
             }
@@ -111,6 +137,7 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
         const legendPosition = this.mapPosition(this.props.legendPosition);
         const searchPosition = this.mapPosition(this.props.searchPosition);
         const toggleLayerPosition = this.mapPosition(this.props.toggleLayerPosition);
+        const bmTogglePosition = this.mapPosition(this.props.bmTogglePosition);
         const datasource = this.props.graphicObjects;
         const dynLayerSource = this.props.dynLayerObject;
 
@@ -138,6 +165,10 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
                     mapHeight={this.props.mapHeight}
                     mapWidth={this.props.mapWidth}
                     baseMapID={this.props.baseMapID}
+                    bmToggleID={this.props.bmToggleID}
+                    bmToggleEnabled={this.props.bmToggleEnabled}
+                    bmTogglePosition={bmTogglePosition}
+                    bmTogglePlaceHolderIndex={this.props.bmTogglePlaceHolderIndex}
                     defaultZoom={this.props.defaultZoom}
                     objectZoom={this.props.singleObjectZoom}
                     defaultLocation={[this.props.defaultX, this.props.defaultY]}
@@ -149,6 +180,8 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
                     symbolAttr={this.props.symbolAttr}
                     dsShowAllObjects={this.props.dsShowAllObjects}
                     dsHighlightingEnabled={this.props.dsHighlightingEnabled}
+                    loadingModal={this.props.loadingModal}
+                    loadingModalMessage={this.props.loadingModalMessage}
                     csDefaultArray={this.props.csDefaultArray}
                     csLegendEntriesArray={this.props.csLegendEntriesArray}
                     dynLayerObjects={dynLayerSource}

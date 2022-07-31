@@ -6,6 +6,8 @@
 import { CSSProperties } from "react";
 import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, WebIcon } from "mendix";
 
+export type BmTogglePositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
+
 export type LegendPositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
 
 export type SearchPositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
@@ -120,6 +122,10 @@ export interface ReactArcGISContainerProps {
     mapHeight: number;
     mapWidth: number;
     baseMapID: string;
+    bmToggleEnabled: boolean;
+    bmToggleID: string;
+    bmTogglePosition: BmTogglePositionEnum;
+    bmTogglePlaceHolderIndex: number;
     defaultY: number;
     defaultX: number;
     defaultZoom: number;
@@ -132,6 +138,8 @@ export interface ReactArcGISContainerProps {
     symbolAttr?: ListAttributeValue<string>;
     dsShowAllObjects: boolean;
     dsHighlightingEnabled: boolean;
+    loadingModal: boolean;
+    loadingModalMessage: string;
     enableLegend: boolean;
     legendStartExpanded: boolean;
     legendTitle: string;
@@ -180,6 +188,10 @@ export interface ReactArcGISPreviewProps {
     mapHeight: number | null;
     mapWidth: number | null;
     baseMapID: string;
+    bmToggleEnabled: boolean;
+    bmToggleID: string;
+    bmTogglePosition: BmTogglePositionEnum;
+    bmTogglePlaceHolderIndex: number | null;
     defaultY: number | null;
     defaultX: number | null;
     defaultZoom: number | null;
@@ -192,6 +204,8 @@ export interface ReactArcGISPreviewProps {
     symbolAttr: string;
     dsShowAllObjects: boolean;
     dsHighlightingEnabled: boolean;
+    loadingModal: boolean;
+    loadingModalMessage: string;
     enableLegend: boolean;
     legendStartExpanded: boolean;
     legendTitle: string;

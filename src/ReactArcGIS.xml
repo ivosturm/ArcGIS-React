@@ -54,11 +54,33 @@ cf8ASFx/Mz8R+KvhPH+Dwijv6xNCuttSgx0Wqkl9GNZxBESIL1W9zH1lADpf6q0FvNKltYxDHtYs
                 </property>
             </propertyGroup>
             <propertyGroup caption="Basemaps">
-                <property key="baseMapID" type="string" required="false" defaultValue="topo">
+                <property key="baseMapID" type="string" required="false" defaultValue="topo-vector">
                     <caption>Base Default Map</caption>
-                    <description>Default map is "topo". Pick one of the values as published by Esri: https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap</description>
+                    <description>Default map is "topo-vector". Pick one of the values as published by Esri: https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap</description>
                 </property>	
-             </propertyGroup>
+                <property key="bmToggleEnabled" type="boolean" defaultValue="true">
+                    <caption>Enable BaseMap Toggle</caption>
+                    <description>Whether a Base Map Toggle will be added to the map</description> 
+                </property> 
+                <property key="bmToggleID" type="string" required="false" defaultValue="satellite">
+                    <caption>Base Toggle Map</caption>
+                    <description>Only used if BaseMap Toggle enabled in 'Widgets' tab. Default map to toggle is "satellite". Pick one of the values as published by Esri: https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap</description>
+                </property>	
+                <property key="bmTogglePosition" type="enumeration" required="true" defaultValue="topRight">
+                    <caption>Position</caption>
+                    <description>Determine where the widget should be position on the map.</description>
+                    <enumerationValues>
+                        <enumerationValue key="bottomRight">Bottom Right</enumerationValue>
+                        <enumerationValue key="bottomLeft">Bottom Left</enumerationValue>
+                        <enumerationValue key="topRight">Top Right</enumerationValue>
+                        <enumerationValue key="topLeft">Top Left</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="bmTogglePlaceHolderIndex" type="integer" defaultValue="1">
+                    <caption>Placeholder Index</caption>
+                    <description>If more widgets, like Legend, have same location selected, use this attribute to make it appear first (1) or second (2).</description> 
+                </property>
+            </propertyGroup>
              <propertyGroup caption="Default Location / Zooming">
                 <property key="defaultY" type="integer" defaultValue="52">
                     <caption>Default Y</caption>
@@ -134,6 +156,16 @@ cf8ASFx/Mz8R+KvhPH+Dwijv6xNCuttSgx0Wqkl9GNZxBESIL1W9zH1lADpf6q0FvNKltYxDHtYs
 					<description>If enabled all available Mendix objects in datasource will be hightlighted with bright blue color.
 					</description>
 				</property>
+            </propertyGroup>
+            <propertyGroup caption="Loading behavior">
+                <property key="loadingModal" type="boolean" defaultValue="false">
+                        <caption>Blocking Modal</caption>
+                        <description>Determine whether a blocking Mendix popup ('Yes') will be shown during loading of layer or only a loading icon ('No')</description> 
+                </property>
+                <property key="loadingModalMessage" type="string" defaultValue="Loading layers...">
+                        <caption>Modal Message</caption>
+                        <description>Determine the progress message on the blocking modal if enabled.</description> 
+                </property>
             </propertyGroup> 
         </propertyGroup>     
         <propertyGroup caption="Widgets">

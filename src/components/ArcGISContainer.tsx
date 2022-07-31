@@ -14,18 +14,15 @@ import Expand from "@arcgis/core/widgets/Expand";
 import Basemap from "@arcgis/core/Basemap";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
-import { whenTrue, whenFalse } from "@arcgis/core/core/watchUtils";
-// import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-// import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import Layer from "@arcgis/core/layers/Layer";
 import PortalItem from "@arcgis/core/portal/PortalItem";
-// import OAuthInfo from "@arcgis/core/identity/OAuthInfo";
+import BasemapToggle from "@arcgis/core/widgets/BasemapToggle"
 import Legend from "@arcgis/core/widgets/Legend";
 import Search from "@arcgis/core/widgets/Search";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import { GisObject, position, logNode } from "../ReactArcGIS";
-import _createQueryDefinitions, { zoomToGraphics } from "../utils/Utils";
+import _createQueryDefinitions, { createLoadingIndicators, zoomToGraphics } from "../utils/Utils";
 import {
     CsDefaultArrayType,
     CsLegendEntriesArrayType,
@@ -41,9 +38,15 @@ export interface ArcGISContainerProps {
     mapWidth: number;
     mapHeight: number;
     baseMapID: string;
+    bmToggleID: string;
+    bmToggleEnabled: boolean;
+    bmTogglePosition: position;
+    bmTogglePlaceHolderIndex: number;
     defaultZoom: number;
     objectZoom: number;
     defaultLocation: number[];
+    loadingModal: boolean;
+    loadingModalMessage: string;
     mxObjects: ListValue;
     tokenAttr?: ListAttributeValue<string>;
     userIdAttr?: ListAttributeValue<string>;
@@ -133,6 +136,8 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
     // see: https://stackoverflow.com/questions/58017215/what-typescript-type-do-i-use-with-useref-hook-when-setting-current-manually
     const mapDiv = useRef<HTMLDivElement | null>(null);
     const loadingDiv = useRef<HTMLDivElement | null>(null);
+    const [progressId] = useState<number>();
+    const progressIdRef = useRef(progressId); 
 
     // console.warn(logNode + " isLoaded boolean: " + props.isLoaded);
 
@@ -280,30 +285,29 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
                 } as GisObject;
                 newGisObjects.push(gisObject);
             });
-            gisObjects = newGisObjects;
-            gisObjectsRef.current = gisObjects;
-            mxObjectsRef.current = newMxObjects;
         }
         // console.debug("gisobjects");
         // console.dir(gisObjects);
-        if (!isLoaded) {
-            console.debug(logNode + "setting mxObjects from initial load");
-            setMxObjects(newMxObjects);
-        } else if (newMxObjects.length !== mxObjects.length) {
-            console.debug(
-                logNode +
-                    "setting mxObjects because amount of objects changed from " +
-                    mxObjects.length +
-                    " to " +
-                    newMxObjects.length
-            );
-            setMxObjects(newMxObjects);
-        } else if (mxObjects.length === newMxObjects.length && newMxObjects.length === 1) {
-            if (mxObjects[0].id !== newMxObjects[0].id) {
-                console.debug(logNode + "setting mxObjects because guid changed");
-                setMxObjects(newMxObjects);
+        if (isLoaded) {
+            if (newMxObjects.length !== mxObjects.length) {
+                console.debug(
+                    logNode +
+                        "setting mxObjects because amount of objects changed from " +
+                        mxObjects.length +
+                        " to " +
+                        newMxObjects.length
+                );
+            } else if (mxObjects.length === newMxObjects.length && newMxObjects.length === 1) {
+                if (mxObjects[0].id !== newMxObjects[0].id) {
+                    console.debug(logNode + "setting mxObjects because guid changed");
+                }
             }
-        }
+        }        
+        // update the new references for usage AFTER all data loading checks
+        gisObjects = newGisObjects;
+        gisObjectsRef.current = gisObjects;
+        mxObjectsRef.current = newMxObjects;
+        setMxObjects(mxObjects);
 
         if (!isLoaded) {
             console.debug(logNode + "useEffect hook triggered on initial load!");
@@ -335,18 +339,24 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
                     center: props.defaultLocation
                 });
 
-                // display the loading indicator when the view is updating
-                whenTrue(view, "updating", () => {
-                    if (loadingDiv.current) {
-                        loadingDiv.current.style.visibility = "";
-                    }
-                });
-                // hide the loading indicator when the view stops updating
-                whenFalse(view, "updating", () => {
-                    if (loadingDiv.current) {
-                        loadingDiv.current.style.visibility = "hidden";
-                    }
-                });
+                if (props.bmToggleEnabled) {
+                    // 1 - Create the widget
+                    const toggle = new BasemapToggle({
+                        // 2 - Set properties
+                        view: view, // view that provides access to the map's 'topo-vector' basemap
+                        nextBasemap: props.bmToggleID // allows for toggling to the 'hybrid' basemap
+                    });
+
+                    // Add widget to the bottom right corner of the view
+                    view.ui.add(toggle, {
+                        position: props.bmTogglePosition,
+                        index: props.bmTogglePlaceHolderIndex
+                    });
+                }
+
+                // either creating loading indicator (spinning round) or progress modal based on widget settings
+                createLoadingIndicators(view,props.loadingModal,props.loadingModalMessage,progressIdRef,loadingDiv);
+
                 const promises: Array<Promise<any>> = [];
                 props.layerArray.forEach(layerObj => {
                     console.debug(logNode + "processing " + layerObj.layerServerType + " : " + layerObj.layerID);
@@ -780,9 +790,11 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
     }, [queryDefinitions, props.mxObjects, highlights]);
     return (
         <div className="mapDiv" ref={mapDiv}>
-            <div id="loading" ref={loadingDiv}>
-                <img src="./widgets/valcon/reactarcgis/assets/custom/loading.gif" />
-            </div>
+            {!props.loadingModal ? (
+                <div id="loading" ref={loadingDiv}>
+                    <img src="./widgets/valcon/reactarcgis/assets/custom/loading.gif" />
+                </div>
+            ) : null}
         </div>
     );
 });

@@ -7,7 +7,7 @@ import Graphic from "@arcgis/core/Graphic";
 import { load, project } from "@arcgis/core/geometry/projection";
 import MapView from "@arcgis/core/views/MapView";
 import { _createUniqueValueRenderer } from "./CustomStylingUtils";
-import { whenFalseOnce } from "@arcgis/core/core/watchUtils";
+import { whenFalse, whenFalseOnce, whenTrue } from "@arcgis/core/core/watchUtils";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export interface QueryFeaturesResult {
@@ -248,7 +248,6 @@ export const zoomToGraphics = (
     highlights: any[]
 ): void => {
     console.debug(logNode + "zooming to objects from data source..");
-    let layerViewCurrent: any = {};
     // let definitionExpression: any = {};
     if (gisObjects && gisObjects.length > 0) {
         // assume all Mendix Layers should be queried
@@ -277,12 +276,14 @@ export const zoomToGraphics = (
                     // iterate over layerviews, comparing layer url property
                     // filtering out the one layer which is connected to Mendix objects
                     if (view && queryDef) {
+                        let layerViewCurrent: any = {};
                         view.layerViews.forEach(layerView => {
-                            if (
-                                queryDef.layerURL ===
-                                String(layerView.layer.get("url")) + "/" + String(layerView.layer.get("layerId"))
-                            ) {
+                            const layerViewURL = String(layerView.layer.get("url")) + "/" + String(layerView.layer.get("layerId"));
+                            // console.debug(logNode + "Query definition: " + queryDef.layerURL + ". Matching with layers of view being iterated over, URL: " + layerViewURL);
+                            if (queryDef.layerURL === layerViewURL) {
                                 layerViewCurrent = layerView;
+                                // console.debug(logNode + "MATCH! Query definition: " + queryDef.layerURL + ". Matching with layers of view being iterated over, URL: " + layerViewURL);
+                            
                             }
                         });
                         if (layerViewCurrent && layerViewCurrent.layer) {
@@ -356,10 +357,10 @@ export const zoomToGraphics = (
                                             result
                                         };
                                         whenFalseOnce(layerViewCurrent, "updating", () => {
-                                            console.debug(logNode + qfResult.layerName + " layer updated, refreshing");
-                                            featureLayer.refresh();
+                                            console.debug(logNode + qfResult.layerName + " layer updated after load"
+                                            );
+                                            resolve(qfResult);
                                         });
-                                        resolve(qfResult);
                                     })
                                     .catch((error: any) => reject(error));
                             });
@@ -370,7 +371,7 @@ export const zoomToGraphics = (
             });
             Promise.all(promisesLayerQuery)
                 .then(results => {
-                    console.debug(logNode + "all Query promises resolved, calling highlightAndZoom");
+                    console.debug(logNode + "all Query promises resolved, calling highlightAndZoom with " + results.length + " QF results");
                     Promise.all(
                         highlightAndZoom(highlights, results, view, props.objectZoom, true, props.dsHighlightingEnabled)
                     ).then(() => {
@@ -388,19 +389,59 @@ export const zoomToGraphics = (
         }
     }
 };
-/* function setWatch(
-    legend: Legend,
-    csLegendEntriesArray: CsLegendEntriesArrayType[],
-    featureLayer: FeatureLayer,
-    layer: LayerArrayType
-): any {
-    console.error(logNode + "setWatch");
-    console.error(legend.activeLayerInfos.length);
-    if (legend.activeLayerInfos.length > 0) {
-        legend.activeLayerInfos.forEach(al => {
-            when(al, "legendElements", () => {
-                updateLegend(legend, csLegendEntriesArray, featureLayer, layer);
-            });
-        });
-    }
-}*/
+export const createLoadingIndicators = (
+    view: MapView,
+    loadingModal: boolean,
+    loadingModalMessage: string,
+    progressIdRef: any,
+    loadingDiv: any
+
+): void => {
+    // display the loading indicator when the view is updating
+    whenTrue(view, "updating", () => {
+        const messagePrefix = logNode + "updating view: " ;
+        if (view.interacting || view.navigating){
+            if (view.interacting) {
+                console.debug(messagePrefix + "interacting (zooming)...");
+            } else {
+                console.debug(messagePrefix + "navigating...");
+            }
+        } else {
+            //@ts-ignore
+            if (view.activeTool && view.activeTool.type ==="draw-2d") {
+                // undocumented feature. If a tool is activated it will be added to the view. if not, it doesn't exist, hence .type will give undefined error
+                // do not add loading modal if actively drawing something...
+                console.debug(messagePrefix + "drawing (selection tool)...");
+            } //@ts-ignore
+            else if (view.activeTool && view.activeTool._drawActive) {
+                // undocumented feature. If a tool is activated it will be added to the view. if not, it doesn't exist, hence .type will give undefined error
+                // do not add loading modal if actively drawing something...
+                console.debug(messagePrefix + "measuring distance...");
+            }
+            else if (loadingModal) {
+                progressIdRef.current = mx.ui.showProgress(loadingModalMessage, true);
+                console.debug(logNode + "updating, so showing progress modal with id" + progressIdRef.current + ". view.stationary: " + view.stationary);
+                //@ts-ignore
+                if (view.activeTool) {
+                    //@ts-ignore
+                    console.debug(logNode + "activeTool.type: " + view.activeTool.type);
+                }
+            }
+            else if (!loadingModal && loadingDiv.current) {
+                loadingDiv.current.style.visibility = "";
+            }
+        }
+    });
+    // hide the loading indicator when the view stops updating
+    whenFalse(view, "updating", () => {
+        if (loadingModal && progressIdRef.current) {
+            mx.ui.hideProgress(progressIdRef.current);
+            progressIdRef.current = undefined;
+            // console.debug(logNode + " not updating anymore, so hiding progress modal with id" + progressIdRef.current);
+        }
+        else if (!loadingModal && loadingDiv.current) {
+            loadingDiv.current.style.visibility = "hidden";
+        }
+        // console.error(logNode + "updating done..");
+    });
+}
