@@ -1,17 +1,25 @@
 ## ReactArcGIS
-[a sophisticated React widget integrating with the newest ArcGIS API 4.2.x]
+[New ArcGIS widget based on React, the Mendix Pluggable Widgets API and the newest ArcGIS API (4.22 / 02-2022)]
 
 ## Features
-[feature highlights]
+[1. Static (in widget settings) as well as dynamic (front end, in app) loading of layers
+2. Optional custom markers for each layer
+3. Optional marker clustering per layer
+4. Fully configurable pop-up windows per layer with both attributes from Mendix as well as ArcGIS
+5. Three types of add on widgets:
+	- Toggle layers pane (disable/enable layers by users)
+	- Search widget; let an end user search on location
+	- Legend: a legend entry for each layer. Also works with custom markers]
 
 ## Usage
-[step by step instructions]
+[If visualization of Mendix data on an ArcGIS map is needed]
 
 ## Demo project
-[link to sandbox]
+[https://arcgisreactdemoproject-sandbox.mxapps.io/]
 
 ## Issues, suggestions and feature requests
-[link to GitHub issues]
+[• Doesn't include drawing 
+• No ArcGIS authentication]
 
 ## Development and contribution
-[specify contribute]
+[Feel free to contact me in case of questions. See the ‘About' page in the demo project as well]
