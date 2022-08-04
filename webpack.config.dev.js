@@ -1,6 +1,5 @@
 const { merge } = require("webpack-merge");
 const baseConfig = require("./node_modules/@mendix/pluggable-widgets-tools/configs/webpack.config.dev.js"); //Can also be webpack.config.prod.js
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ArcGISPlugin = require("@arcgis/webpack-plugin");
 
 
@@ -10,12 +9,7 @@ const customConfig = {
             features: {
                 "3d": false
               },
-            }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {from: './assets', to:'./widgets/valcon/reactarcgis/assets'}
-            ]
-        })
+            })
     ],
     module: {
         rules: [

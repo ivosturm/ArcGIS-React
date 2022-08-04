@@ -1,8 +1,6 @@
 import { Component, ReactNode, createElement } from "react";
 import { ValueStatus } from "mendix";
 import ArcGISContainer from "./components/ArcGISContainer";
-import esriConfig from "@arcgis/core/config.js";
-
 import { ReactArcGISContainerProps } from "../typings/ReactArcGISProps";
 
 import "./ui/ReactArcGIS.css";
@@ -133,7 +131,6 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
     }
     render(): ReactNode {
         // make known to esri where local assests / js files are stored
-        esriConfig.assetsPath = "./widgets/valcon/reactarcgis/assets";
         const legendPosition = this.mapPosition(this.props.legendPosition);
         const searchPosition = this.mapPosition(this.props.searchPosition);
         const toggleLayerPosition = this.mapPosition(this.props.toggleLayerPosition);
