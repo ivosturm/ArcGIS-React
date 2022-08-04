@@ -68,27 +68,41 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
                 if (this.props.graphicObjects?.items && this.props.graphicObjects?.items.length) {
                     prevPropsStatusItemsLength = this.props.graphicObjects?.items.length;
                 }
-                const messagePrefix = "props changed, all configured objects now available! Map loaded (" + this.state.isLoaded + ") GraphicObjects amount (" + prevPropsStatusItemsLength + ") + status (" + nextProps.graphicObjects?.status + ")";
-                if (this.state.isLoaded  && 
-                    nextProps.graphicObjects?.status === ValueStatus.Available && this.props.graphicObjects?.status === ValueStatus.Available &&
-                    prevPropsStatusItemsLength > 0 && nextPropsStatusItemsLength > 0 &&
-                    prevPropsStatusItemsLength === nextPropsStatusItemsLength) {
-                    if (prevPropsStatusItemsLength === 1 &&
+                const messagePrefix =
+                    "props changed, all configured objects now available! Map loaded (" +
+                    this.state.isLoaded +
+                    ") GraphicObjects amount (" +
+                    prevPropsStatusItemsLength +
+                    ") + status (" +
+                    nextProps.graphicObjects?.status +
+                    ")";
+                if (
+                    this.state.isLoaded &&
+                    nextProps.graphicObjects?.status === ValueStatus.Available &&
+                    this.props.graphicObjects?.status === ValueStatus.Available &&
+                    prevPropsStatusItemsLength > 0 &&
+                    nextPropsStatusItemsLength > 0 &&
+                    prevPropsStatusItemsLength === nextPropsStatusItemsLength
+                ) {
+                    if (
+                        prevPropsStatusItemsLength === 1 &&
                         nextPropsStatusItemsLength === 1 &&
-                        (nextProps.graphicObjects.items && this.props.graphicObjects.items) &&
+                        nextProps.graphicObjects.items &&
+                        this.props.graphicObjects.items &&
                         nextProps.graphicObjects?.items[0].id !== this.props.graphicObjects?.items[0].id
-                        ) {
-                            console.debug(logNode + messagePrefix + " didn't change, but Mendix ID changed. Rerendering...");
-                            return true;               
-                    } else // in case of unexpected reloads from Mendix or React framework, block if no changes
-                    {
-                            console.debug(logNode + messagePrefix + " didn't change. NOT rerendering...~"
+                    ) {
+                        console.debug(
+                            logNode + messagePrefix + " didn't change, but Mendix ID changed. Rerendering..."
                         );
+                        return true;
+                    } // in case of unexpected reloads from Mendix or React framework, block if no changes
+                    else {
+                        console.debug(logNode + messagePrefix + " didn't change. NOT rerendering...~");
                         return false;
                     }
                 } else {
-                        console.debug(logNode + messagePrefix + " changed. Rerendering... ");
-                        return true;
+                    console.debug(logNode + messagePrefix + " changed. Rerendering... ");
+                    return true;
                 }
             } else {
                 console.debug(
