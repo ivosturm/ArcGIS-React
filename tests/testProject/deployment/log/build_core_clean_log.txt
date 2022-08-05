@@ -1,0 +1,8 @@
+Buildfile: C:\Users\Joe.Robertson\Documents\Widgets\arcGIS\tests\testProject\deployment\build_core.xml
+
+clean:
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
+
+

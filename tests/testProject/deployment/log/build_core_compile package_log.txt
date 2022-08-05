@@ -1,0 +1,14 @@
+Buildfile: C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment\build_core.xml
+
+compile:
+    [javac] Compiling 1 source file to C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment\run\bin
+    [javac] Note: C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\javasource\system\UserActionsRegistrar.java uses or overrides a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+package:
+      [jar] Building jar: C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment\model\bundles\project.jar
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+
+

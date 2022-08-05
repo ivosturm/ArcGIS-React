@@ -1,0 +1,10 @@
+Buildfile: C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment\build_core.xml
+
+deploy:
+     [copy] Copying 41 files to C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment
+     [copy] Copying 5 files to C:\Users\Joe.Robertson\Documents\Widgets\arcGISMap\tests\testProject\deployment\model\resources
+
+BUILD SUCCESSFUL
+Total time: 3 seconds
+
+
