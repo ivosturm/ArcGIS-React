@@ -1,3 +1,5 @@
+/*
+04082022 - Ivo Sturm; commented out as we don't want to enforce styling by widget on body of Mendix page itself. Since Mendix is a single page app it would have impact on all pages, even the ones the widget isn't in.
 body {
   padding: 0;
   margin: 0;
@@ -148,5 +150,5 @@ p {
 }
 .fs1 {
   font-size: 16px;
-}
+}*/
 

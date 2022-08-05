@@ -45,7 +45,7 @@ export interface ArcGISContainerProps {
     defaultZoom: number;
     objectZoom: number;
     defaultLocation: number[];
-    loadingModal: boolean;
+    loadingBehavior: string;
     loadingModalMessage: string;
     mxObjects: ListValue;
     tokenAttr?: ListAttributeValue<string>;
@@ -353,9 +353,8 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
                         index: props.bmTogglePlaceHolderIndex
                     });
                 }
-
                 // either creating loading indicator (spinning round) or progress modal based on widget settings
-                createLoadingIndicators(view,props.loadingModal,props.loadingModalMessage,progressIdRef,loadingDiv);
+                createLoadingIndicators(view,props.loadingBehavior,props.loadingModalMessage,progressIdRef,loadingDiv);
 
                 const promises: Array<Promise<any>> = [];
                 props.layerArray.forEach(layerObj => {
@@ -790,7 +789,7 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
     }, [queryDefinitions, props.mxObjects, highlights]);
     return (
         <div className="mapDiv" ref={mapDiv}>
-            {!props.loadingModal ? (
+            {props.loadingBehavior === "animatedGIF" ? (
                 <div id="loading" ref={loadingDiv}>
                     <img src="./widgets/valcon/reactarcgis/assets/custom/loading.gif" />
                 </div>

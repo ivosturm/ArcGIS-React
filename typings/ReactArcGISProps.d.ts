@@ -8,6 +8,8 @@ import { DynamicValue, ListValue, ListActionValue, ListAttributeValue, WebIcon }
 
 export type BmTogglePositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
 
+export type LoadingBehaviorEnum = "modal" | "animatedGIF" | "none";
+
 export type LegendPositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
 
 export type SearchPositionEnum = "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
@@ -138,7 +140,7 @@ export interface ReactArcGISContainerProps {
     symbolAttr?: ListAttributeValue<string>;
     dsShowAllObjects: boolean;
     dsHighlightingEnabled: boolean;
-    loadingModal: boolean;
+    loadingBehavior: LoadingBehaviorEnum;
     loadingModalMessage: string;
     enableLegend: boolean;
     legendStartExpanded: boolean;
@@ -204,7 +206,7 @@ export interface ReactArcGISPreviewProps {
     symbolAttr: string;
     dsShowAllObjects: boolean;
     dsHighlightingEnabled: boolean;
-    loadingModal: boolean;
+    loadingBehavior: LoadingBehaviorEnum;
     loadingModalMessage: string;
     enableLegend: boolean;
     legendStartExpanded: boolean;

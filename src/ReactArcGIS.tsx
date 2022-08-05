@@ -180,7 +180,7 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
                     symbolAttr={this.props.symbolAttr}
                     dsShowAllObjects={this.props.dsShowAllObjects}
                     dsHighlightingEnabled={this.props.dsHighlightingEnabled}
-                    loadingModal={this.props.loadingModal}
+                    loadingBehavior={this.props.loadingBehavior}
                     loadingModalMessage={this.props.loadingModalMessage}
                     csDefaultArray={this.props.csDefaultArray}
                     csLegendEntriesArray={this.props.csLegendEntriesArray}

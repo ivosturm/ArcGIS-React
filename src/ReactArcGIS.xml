@@ -158,9 +158,14 @@ cf8ASFx/Mz8R+KvhPH+Dwijv6xNCuttSgx0Wqkl9GNZxBESIL1W9zH1lADpf6q0FvNKltYxDHtYs
 				</property>
             </propertyGroup>
             <propertyGroup caption="Loading behavior">
-                <property key="loadingModal" type="boolean" defaultValue="false">
-                        <caption>Blocking Modal</caption>
-                        <description>Determine whether a blocking Mendix popup ('Yes') will be shown during loading of layer or only a loading icon ('No')</description> 
+                <property key="loadingBehavior" type="enumeration" defaultValue="modal">
+                        <caption>Loading Behavior</caption>
+                        <description>Determine what loading feedback the widget should give during loading of the map.</description> 
+                        <enumerationValues>
+                            <enumerationValue key="modal">Modal</enumerationValue>
+                            <enumerationValue key="animatedGIF">Animated GIF</enumerationValue>
+                            <enumerationValue key="none">None</enumerationValue>
+                    </enumerationValues>
                 </property>
                 <property key="loadingModalMessage" type="string" defaultValue="Loading layers...">
                         <caption>Modal Message</caption>

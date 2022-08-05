@@ -202,8 +202,11 @@ export function highlightAndZoom(
             highlights = newHighlights;
         }
         let singleItem = true;
+        let singlePointItem = false;
         if (geometriesReturned && geometriesReturned.length > 1) {
             singleItem = false;
+        } else if (geometriesReturned[0].type ==="point") {
+            singlePointItem = true;
         }
         if (zoom) {
             const goToOpts2D = {
@@ -211,17 +214,17 @@ export function highlightAndZoom(
                 duration: 2000,
                 easing: "ease"
             };
-            // for multiple items, API zooms to features with proper zooming
-            if (!singleItem) {
+            // for multiple items (and single non-point item), GoTo zooms to features with proper zooming
+            if (!singleItem || !singlePointItem) {
                 promisesGoTo.push(
                     view.goTo({
                         target: geometriesReturned,
                         options: goToOpts2D
                     })
                 );
-            } // for single items, ArcGIS doesn't zoom properly, so adjusting zoom based on Studio Pro setting
+            } // for single point items, GoTo doesn't zoom properly, whereas for PolyLine /Polygon it does.. so adjusting zoom based on Studio Pro setting
             else {
-                console.debug(logNode + "zooming to single object using single item zoom setting");
+                console.debug(logNode + "zooming to single point using widget setting 'single item zoom level':" + objectZoom);
                 promisesGoTo.push(
                     view.goTo({
                         target: geometriesReturned,
@@ -391,7 +394,7 @@ export const zoomToGraphics = (
 };
 export const createLoadingIndicators = (
     view: MapView,
-    loadingModal: boolean,
+    loadingBehavior: string,
     loadingModalMessage: string,
     progressIdRef: any,
     loadingDiv: any
@@ -418,7 +421,7 @@ export const createLoadingIndicators = (
                 // do not add loading modal if actively drawing something...
                 console.debug(messagePrefix + "measuring distance...");
             }
-            else if (loadingModal) {
+            else if (loadingBehavior === "modal") {
                 progressIdRef.current = mx.ui.showProgress(loadingModalMessage, true);
                 console.debug(logNode + "updating, so showing progress modal with id" + progressIdRef.current + ". view.stationary: " + view.stationary);
                 //@ts-ignore
@@ -427,19 +430,19 @@ export const createLoadingIndicators = (
                     console.debug(logNode + "activeTool.type: " + view.activeTool.type);
                 }
             }
-            else if (!loadingModal && loadingDiv.current) {
+            else if (loadingBehavior === "animatedGIF" && loadingDiv.current) {
                 loadingDiv.current.style.visibility = "";
             }
         }
     });
     // hide the loading indicator when the view stops updating
     whenFalse(view, "updating", () => {
-        if (loadingModal && progressIdRef.current) {
+        if (loadingBehavior === "modal" && progressIdRef.current) {
             mx.ui.hideProgress(progressIdRef.current);
             progressIdRef.current = undefined;
             // console.debug(logNode + " not updating anymore, so hiding progress modal with id" + progressIdRef.current);
         }
-        else if (!loadingModal && loadingDiv.current) {
+        else if (loadingBehavior === "animatedGIF" && loadingDiv.current) {
             loadingDiv.current.style.visibility = "hidden";
         }
         // console.error(logNode + "updating done..");
