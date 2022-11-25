@@ -205,9 +205,9 @@ export function highlightAndZoom(
         let singlePointItem = false;
         if (geometriesReturned && geometriesReturned.length > 1) {
             singleItem = false;
-        } else if (geometriesReturned[0].type ==="point") {
+        } else if ((geometriesReturned[0] && geometriesReturned[0].type ==="point") || geometriesReturned.length === 0) {
             singlePointItem = true;
-        }
+        } 
         if (zoom) {
             const goToOpts2D = {
                 animate: true,

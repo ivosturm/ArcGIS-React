@@ -222,6 +222,7 @@ export default class ReactArcGIS extends Component<ArcGISContainerProps, ArcGISC
                     toggleLayerStartExpanded={this.props.toggleLayerStartExpanded}
                     toggleLayerPosition={toggleLayerPosition}
                     toggleLayerPlaceHolderIndex={this.props.toggleLayerPlaceholderIndex}
+                    authPortalURL={this.props.authPortalURL}
                     isLoaded={this.state.isLoaded}
                     view={this.state.view}
                     legend={this.state.legend}

@@ -32,6 +32,8 @@ import {
 } from "../../typings/ReactArcGISProps";
 import { createCustomContent } from "../utils/PopupUtils";
 import { createLegendUniqueValueRender } from "../utils/CustomStylingUtils";
+import ServerInfo from "@arcgis/core/identity/ServerInfo";
+import IdentityManager from "@arcgis/core/identity/IdentityManager";
 
 export interface ArcGISContainerProps {
     onLoad: (isLoaded: boolean, view: MapView, legend: Legend) => void;
@@ -100,6 +102,7 @@ export interface ArcGISContainerProps {
     cl_radius: number;
     cl_minSize: number;
     cl_maxSize: number;
+    authPortalURL: string;
     isLoaded: boolean; // workaround to store isLoaded state of functional component over refreshes
     view: MapView;
     legend: Legend;
@@ -245,6 +248,7 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
     useEffect(() => {
         const newGisObjects: GisObject[] = [];
         let newMxObjects: ObjectItem[] = [];
+		let objectChange = false;
         if (props.mxObjects && props.mxObjects.items) {
             // if (!mxObjectsRef.current || mxObjectsRef.current.length === 0) {
             newMxObjects = props.mxObjects.items;
@@ -289,18 +293,31 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
         // console.debug("gisobjects");
         // console.dir(gisObjects);
         if (isLoaded) {
-            if (newMxObjects.length !== mxObjects.length) {
-                console.debug(
-                    logNode +
-                        "setting mxObjects because amount of objects changed from " +
-                        mxObjects.length +
-                        " to " +
-                        newMxObjects.length
-                );
-            } else if (mxObjects.length === newMxObjects.length && newMxObjects.length === 1) {
-                if (mxObjects[0].id !== newMxObjects[0].id) {
-                    console.debug(logNode + "setting mxObjects because guid changed");
+			const messagePostfix = "Amount of objects changed from " + mxObjectsRef.current.length + " to " + newGisObjects.length 
+            // there are 3 scenario's which should trigger a reload
+            // scenario 1: object amount changed
+            if (newMxObjects.length !== mxObjectsRef.current.length) {
+                console.debug(logNode + "reloading scenario 1: " + messagePostfix);
+                objectChange = true;
+            } else if (mxObjectsRef.current.length === newMxObjects.length && newMxObjects.length >= 1) {
+                // Same amount of ojects after reload
+                // scenario 2/3: check if object changes, so if ID's and appearance (color, size, symbol) are still the same
+                for (var i = 0; i <  newGisObjects.length ; i++) {
+                    const gisObjectFound = gisObjectsRef.current.filter(oldGisObject => 
+                        oldGisObject.ID === newGisObjects[i].ID && 
+                        oldGisObject.color === newGisObjects[i].color &&
+                        oldGisObject.size === newGisObjects[i].size &&
+                        oldGisObject.symbol=== newGisObjects[i].symbol
+                    )
+                    if (gisObjectFound.length === 0){
+                        objectChange = true;
+                        console.debug(logNode + "reloading scenario 2/3: " + messagePostfix +  " (amount of objects same but id's or appearance changed)");
+                        break;
+                    }
                 }
+            }
+			if (!objectChange){
+                console.debug(logNode + "reloading scenario 4: " + messagePostfix + " (no object amount, id,nor appearance changed. No new zooming... )"); 
             }
         }        
         // update the new references for usage AFTER all data loading checks
@@ -312,7 +329,12 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
         if (!isLoaded) {
             console.debug(logNode + "useEffect hook triggered on initial load!");
             // esriConfig.apiKey = props.APIKey;
-
+            let serverInfo = new ServerInfo();
+            serverInfo.server = props.authPortalURL;
+            serverInfo.tokenServiceUrl = props.authPortalURL + "/arcgis/tokens/generateToken";
+            serverInfo.hasServer = true;
+            IdentityManager.registerServers([serverInfo]);
+            
             // generate query definitions for all layers based on loaded mx objects
             _createQueryDefinitions(queryDefinitions, props.layerArray, gisObjects);
             if (mapDiv.current != null) {
@@ -773,8 +795,8 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
                     setMxObjects(mxObjects);
                 });
             }
-        } else {
-            console.debug(logNode + "useEffect hook triggered after initial load!");
+        } else if (objectChange) {
+            console.debug(logNode + "useEffect hook triggered after initial load with object change!");
             if (props.view) {
                 // if at initial load no mxobjects where available, possible in listen to grid scenario
                 // then querydefinitions need to be built still

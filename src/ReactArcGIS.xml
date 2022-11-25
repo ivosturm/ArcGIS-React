@@ -602,5 +602,13 @@ cf8ASFx/Mz8R+KvhPH+Dwijv6xNCuttSgx0Wqkl9GNZxBESIL1W9zH1lADpf6q0FvNKltYxDHtYs
                 </property>
             </propertyGroup>
         </propertyGroup>
+        <propertyGroup caption="Authentication">
+            <propertyGroup caption="Registration">
+                <property key="authPortalURL" type="string" defaultValue="https://www.arcgisonline.com">
+                    <caption>Portal URL</caption>
+                    <description>The client specific portal URL if authentication against a specific client ArcGIS server is needed. Doesn't enforce OAuth, but redirects user to correct portal to log in.</description> 
+                </property>
+             </propertyGroup>
+        </propertyGroup>       
    </properties>
 </widget>
