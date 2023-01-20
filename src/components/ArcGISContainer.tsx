@@ -14,15 +14,12 @@ import Expand from "@arcgis/core/widgets/Expand";
 import Basemap from "@arcgis/core/Basemap";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import Layer from "@arcgis/core/layers/Layer";
-import PortalItem from "@arcgis/core/portal/PortalItem";
 import BasemapToggle from "@arcgis/core/widgets/BasemapToggle"
 import Legend from "@arcgis/core/widgets/Legend";
 import Search from "@arcgis/core/widgets/Search";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import { GisObject, position, logNode } from "../ReactArcGIS";
-import _createQueryDefinitions, { createLoadingIndicators, zoomToGraphics } from "../utils/Utils";
+import _createQueryDefinitions, { createLoadingIndicators, loadLayer, zoomToGraphics } from "../utils/Utils";
 import {
     CsDefaultArrayType,
     CsLegendEntriesArrayType,
@@ -30,8 +27,6 @@ import {
     LayerArrayType,
     LayerServerTypeEnum
 } from "../../typings/ReactArcGISProps";
-import { createCustomContent } from "../utils/PopupUtils";
-import { createLegendUniqueValueRender } from "../utils/CustomStylingUtils";
 import ServerInfo from "@arcgis/core/identity/ServerInfo";
 import IdentityManager from "@arcgis/core/identity/IdentityManager";
 
@@ -115,7 +110,7 @@ export interface QueryDefinition {
     queryDefinition: string;
 }
 
-interface FieldInfo {
+export interface FieldInfo {
     fieldName: string;
     visible: boolean;
     label: string;
@@ -141,6 +136,8 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
     const loadingDiv = useRef<HTMLDivElement | null>(null);
     const [progressId] = useState<number>();
     const progressIdRef = useRef(progressId); 
+    const [blockProgressModal] = useState<boolean>(false);
+    const blockProgressModalRef = useRef(blockProgressModal); 
 
     // console.warn(logNode + " isLoaded boolean: " + props.isLoaded);
 
@@ -376,245 +373,48 @@ const ArcGISContainer = memo((props: ArcGISContainerProps) => {
                     });
                 }
                 // either creating loading indicator (spinning round) or progress modal based on widget settings
-                createLoadingIndicators(view,props.loadingBehavior,props.loadingModalMessage,progressIdRef,loadingDiv);
+                createLoadingIndicators(view,props.loadingBehavior,props.loadingModalMessage,progressIdRef,loadingDiv, blockProgressModalRef);
 
-                const promises: Array<Promise<any>> = [];
-                props.layerArray.forEach(layerObj => {
-                    console.debug(logNode + "processing " + layerObj.layerServerType + " : " + layerObj.layerID);
-                    if (layerObj.layerServerType === "FeatureServer" || layerObj.layerServerType === "MapServer") {
-                        const layerID = layerObj.layerID;
-                        // console.debug(logNode + "start building layer: " + layerID);
-                        // get queryDefinition for layer based on layerID of MxObjects
-                        const queryDefinitionObj = queryDefinitions.filter(queryDefinition => {
-                            return queryDefinition.layerID === layerID;
-                        })[0];
-                        let queryDefinition = queryDefinitionObj.queryDefinition;
-                        // if all objects needs to be shown, don't use querydefinition when building the layer
-                        // but only for highligting these objects after all are loaded
-                        if (props.dsShowAllObjects) {
-                            queryDefinition = "1=1";
-                        }
-
-                        // console.debug(logNode + "Layer: " + layerID + " queryDefinition: " + queryDefinition);
-
-                        // get interaction attributes for layer based on layerID of MxObjects
-                        const intAttributesArrayLayer = props.intAttributesArray.filter(intAttribute => {
-                            if (intAttribute.intAttributeLayerID === layerID) {
-                                return {
-                                    fieldName: intAttribute.intAttributeName,
-                                    visible: true,
-                                    label: intAttribute.intAttributeLabel,
-                                    format: {
-                                        places: intAttribute.intAttributeDecimalPlaces,
-                                        digitSeparator: intAttribute.intAttributeDecimalSeparator
-                                    }
-                                };
-                            }
-                            return null;
-                        });
-                        const fieldInfos: FieldInfo[] = [];
-                        let inAttributeTitle = "";
-                        intAttributesArrayLayer.forEach(intAttribute => {
-                            const fieldInfo: FieldInfo = {
-                                fieldName: intAttribute.intAttributeName,
-                                visible: true,
-                                label: intAttribute.intAttributeLabel
-                            };
-                            fieldInfos.push(fieldInfo);
-                            if (intAttribute.intAttributeIsTitle) {
-                                inAttributeTitle = intAttribute.intAttributeName;
-                            }
-                        });
-                        // console.debug(logNode + "fieldinfos for layer " + layerID);
-                        // console.dir(fieldInfos);
-                        const btnId = "pop-mx-action-default-" + layerID;
-                        let intButtonIconClass = "";
-                        if (props.intButtonIcon?.value?.type === "glyph") {
-                            intButtonIconClass = " glyphicon " + props.intButtonIcon.value.iconClass;
-                        }
-                        // console.debug(logNode + "button icon:" + intButtonIconClass);
-                        // if (layerObj.layerServerType === "FeatureServer") {
-                        const actionArray = [];
-                        actionArray.push({
-                            title: props.intButtonLabel,
-                            id: btnId,
-                            className: props.intButtonClass + intButtonIconClass,
-                            type: "button"
-                        });
-
-                        let featureLayerSettings = {};
-                        // clustering needs to be enabled generically and on layer
-                        if (props.cl_enabled && layerObj.clusteringEnabled) {
-                            const featureReduction = {
-                                type: "cluster",
-                                clusterRadius: props.cl_radius + "px",
-                                // {cluster_count} is an aggregate field containing
-                                // the number of features comprised by the cluster
-                                popupTemplate: {
-                                    title: props.cl_popupTitle,
-                                    content: props.cl_popupContent,
-                                    fieldInfos: [
-                                        {
-                                            fieldName: "cluster_count",
-                                            format: {
-                                                places: 0,
-                                                digitSeparator: true
-                                            }
-                                        }
-                                    ]
-                                },
-                                clusterMinSize: props.cl_minSize + "px",
-                                clusterMaxSize: props.cl_maxSize + "px",
-                                labelingInfo: [
-                                    {
-                                        deconflictionStrategy: "none",
-                                        labelExpressionInfo: {
-                                            expression: "Text($feature.cluster_count, '#,###')"
-                                        },
-                                        symbol: {
-                                            type: "text",
-                                            color: props.cl_symbolTextColor,
-                                            font: {
-                                                weight: "bold",
-                                                family: "Noto Sans",
-                                                size: props.cl_symbolTextSize + "px"
-                                            }
-                                        },
-                                        labelPlacement: "center-center"
-                                    }
-                                ]
-                            };
-                            featureLayerSettings = {
-                                // URL to the service
-                                url: layerObj.layerURLStatic,
-                                definitionExpression: queryDefinition,
-                                featureReduction,
-                                popupTemplate: {
-                                    title: "{" + inAttributeTitle + "}",
-                                    content: [
-                                        {
-                                            type: "fields", // FieldsContentElement
-                                            fieldInfos
-                                        }
-                                    ],
-                                    actions: actionArray
-                                },
-                                outFields: ["*"]
-                            };
-                        } else if (layerObj.mendixLayer) {
-                            // if connected to Mendix objects enabled, dynamically populate popup with possibly Mendix attributes as well
-                            // if custom styling enabled, legend needs to be built up with a dummy extra layer,
-                            // because of shortcoming in unqiquevaluerenderer, generating duplicate legend entries.
-                            let legendEnabled = true;
-                            if (layerObj.customStylingEnabled) {
-                                legendEnabled = false;
-                            }
-                            featureLayerSettings = {
-                                // URL to the service
-                                url: layerObj.layerURLStatic,
-                                definitionExpression: queryDefinition,
-                                legendEnabled,
-                                popupTemplate: {
-                                    title: "{" + inAttributeTitle + "}",
-                                    outFields: ["*"],
-                                    content: (feature: any) => {
-                                        if (mendixLayersRef && mendixLayersRef.current) {
-                                            return createCustomContent(
-                                                feature,
-                                                intAttributesArrayLayer,
-                                                layerObj,
-                                                props.intMendixXPathStringr
-                                            );
-                                        }
-                                    },
-                                    actions: actionArray,
-                                    fieldInfos
-                                },
-                                outFields: ["*"]
-                            };
-                        } else {
-                            featureLayerSettings = {
-                                // URL to the service
-                                url: layerObj.layerURLStatic,
-                                definitionExpression: queryDefinition,
-                                popupTemplate: {
-                                    title: "{" + inAttributeTitle + "}",
-                                    outFields: ["*"],
-                                    content: [
-                                        {
-                                            type: "fields", // FieldsContentElement
-                                            fieldInfos
-                                        }
-                                    ],
-                                    actions: [],
-                                    fieldInfos
-                                },
-                                outFields: ["*"]
-                            };
-                        }
-
-                        // console.debug(logNode + layerObj.layerID + " : " + layerObj.layerServerType);
-                        const featureLayer = new FeatureLayer(featureLayerSettings);
-                        featureLayer.visible = layerObj.visibilityOnLoad;
-                        webMap.add(featureLayer, layerObj.layerIndex);
-                        if (layerObj.mendixLayer) {
-                            if (layerObj.customStylingEnabled) {
-                                const featureLayerLegendDummy = new FeatureLayer({
-                                    title: layerObj.layerID,
-                                    id: "Dummy",
-                                    source: [], // add no graphics as it is a dummy layer only used for adding legend of layers with custom styling
-                                    fields: [
-                                        {
-                                            name: "ObjectID",
-                                            alias: "ObjectID",
-                                            type: "oid"
-                                        },
-                                        {
-                                            name: "Name",
-                                            alias: "Name",
-                                            type: "string"
-                                        },
-                                        {
-                                            name: "Type",
-                                            alias: "Type",
-                                            type: "string"
-                                        }
-                                    ],
-                                    objectIdField: "ObjectID",
-                                    geometryType: "point",
-                                    spatialReference: { wkid: 4326 },
-                                    renderer: createLegendUniqueValueRender(props.csLegendEntriesArray, layerObj)
-                                });
-                                webMap.add(featureLayerLegendDummy, 0);
-                            }
-                            // need to wrap in promise to make sure layer is fully loaded when zooming, applying custom styling etc.
-                            const promiseLayer = new Promise(resolve => {
-                                view.whenLayerView(featureLayer).then(() => {
-                                    console.debug(
-                                        logNode + "loaded " + layerObj.layerServerType + " : " + layerObj.layerID
-                                    );
-                                    resolve(featureLayer);
-                                });
-                            });
-                            promises.push(promiseLayer);
-                        }
-                    } else if (layerObj.layerServerType === "PortalItem") {
-                        console.debug(logNode + "loading PortalItem with id: " + layerObj.portalItemID);
-                        Layer.fromPortalItem({
-                            portalItem: new PortalItem({
-                                id: layerObj.portalItemID // "dbd30266193b470a9adf795a38935bab"
-                            })
-                        }).then(layer => {
-                            // add the layer to the map
-                            webMap.add(layer, layerObj.layerIndex);
-                            layer.visible = layerObj.visibilityOnLoad;
-                        });
-                    }
+                const mendixLayerpromises: Array<Promise<any>> = [];
+                const mendixLayers = props.layerArray.filter(layer => {
+                    return layer.mendixLayer;
                 });
-
-                Promise.all(promises).then(() => {
-                    console.debug(logNode + "all layerViews loaded, zooming to graphics now..");
-                    zoomToGraphics(view, gisObjects, queryDefinitions, props, highlights);
+                // load Mendix layers first
+                mendixLayers.forEach(mendixLayerObj => {
+                    loadLayer(props, mendixLayerObj, queryDefinitions, mendixLayersRef, webMap, view, mendixLayerpromises);
+                });
+                // and trigger zooming for Mendix layers
+                Promise.all(mendixLayerpromises).then(() => {
+                    console.debug(logNode +"Initial load: all Mendix Layer views loaded");
+                    if (gisObjects && gisObjects.length && gisObjects.length > 0) {
+                        const zoomDonePromise = zoomToGraphics(view, gisObjects, queryDefinitions, props, highlights);
+                        zoomDonePromise.then(()=> {
+                            console.debug(logNode +"Initial load: Zoomed to Mendix objects, blocking loading indicator and loading other layers now...")
+                            blockProgressModalRef.current = true;
+                            if (progressIdRef && progressIdRef.current){
+                                mx.ui.hideProgress(progressIdRef.current);
+                                progressIdRef.current = undefined;
+                            }
+                            
+                            // and afterwards load other layers
+                            const otherLayers = props.layerArray.filter(layer => {
+                                return !layer.mendixLayer;
+                            });
+                            if (otherLayers.length > 0) {
+                                const otherLayerpromises: Array<Promise<any>> = [];
+                                otherLayers.forEach(otherLayerObj => {
+                                    loadLayer(props, otherLayerObj, queryDefinitions, mendixLayersRef, webMap, view, otherLayerpromises);
+                                });
+                                Promise.all(otherLayerpromises).then(() => {
+                                    console.debug(logNode +"Initial load: all other layer views loaded, removing block on loading indicator...");
+                                    blockProgressModalRef.current = false;
+                                });
+                            } else {
+                                console.debug(logNode +"Initial load: no other layers than Mendix layers, removing block on loading indicator...");
+                                blockProgressModalRef.current = false;
+                            }
+                        })
+                    }
                 });
 
                 // Event handler that fires each time an action is clicked.
